@@ -1,28 +1,86 @@
-Project Iceberg N GUI beta — An Introduction
-What it is
-Project Iceberg is a 32-bit operating system for x86 computers, built entirely from scratch. It boots from a CD image, brings up its own graphical desktop, and gives the user windows, a file explorer, a text editor and a command terminal.
+# 🧊 Iceberg OS
 
-It is roughly 50 KB of compiled code, written in C and x86 assembly.
+A hobby operating system with a graphical desktop, its own web browser, a built-in app store, an update system, and a from-scratch TLS 1.3 stack. Built for fun, one feature at a time.
 
-An independent kernel
-Iceberg does not use the Linux kernel. It is also not built on Windows NT, any BSD, or any other existing operating system. Every line that runs after the firmware hands over control — the bootloader, the interrupt handling, the drivers, the graphics, the filesystem, the desktop — was written for this project.
+> **Status:** early beta (currently 0.11.x). Expect rough edges. Tested in VirtualBox.
 
-This matters because most software that calls itself an "OS" is in fact a distribution: a familiar kernel with a different set of programs arranged on top of it. Ubuntu, Fedora and Android all share the Linux kernel. Iceberg shares its kernel with nothing. The only outside code it relies on is the machine's own BIOS, which it asks for disk reads and a graphics mode during the first moments of boot, and a font that was converted into a bitmap before the system was compiled.
+---
 
-How it starts
-When the computer powers on, the firmware reads the first sector of the CD and runs it. That sector is Iceberg's bootloader. In real mode it reads the rest of itself from disk, measures how much memory the machine has, asks the BIOS for a linear-framebuffer video mode — 1024x768 in 32-bit colour if the hardware offers it, with several fallbacks if not — enables the A20 line, installs a flat descriptor table, and switches the processor into 32-bit protected mode. It then jumps into the kernel.
+## What's in it so far
 
-From that point the BIOS is gone and the kernel is alone with the hardware.
+### Desktop and apps
+- Graphical desktop with windows and desktop icons
+- **Notepad** with a proper *Save As* dialog: choose the file name, `.txt` or `.html`, and where to save (saves to the local disk)
+- **Copy and paste** commands
+- Startup sound, plus a globe icon for the browser
 
-What the kernel does
-It installs an interrupt table and remaps the interrupt controller, starts a 100 Hz timer, and talks directly to the PS/2 controller to read the keyboard and the mouse, including the scroll wheel. It reads the clock from CMOS. It manages memory with a simple allocator. Everything drawn on screen is composed in an off-screen buffer and copied to the framebuffer a rectangle at a time, so the desktop stays smooth without a graphics driver of any kind.
+### Web browser
+- Built-in browser that loads real websites
+- Direct **HTTPS**, no proxy needed
+- Typed bare names (like `example.com`) try `https://` first, then fall back to `http://`
+- Missing proxy is remembered for 20 seconds so pages don't stall
 
-Files live in a small in-memory filesystem called Floe. It has directories, creation, deletion and editing, and it arrives preloaded with a sample tree. Because it is held in RAM, its contents are gone when the machine restarts.
+### Networking and security
+- Own TCP engine (`tcp.c`) with ARP replies and 1460-byte segments
+- **TLS 1.3 client** written from scratch, including the crypto
+- **Certificate checking** against a built-in trust store of 33 root certificates
+- Timing line in the Updates log and the `net` command, for spotting slow connections
 
-What the user sees
-A desktop with a wallpaper, icons and a taskbar. Windows can be dragged, minimised and closed, and they stack in a proper order. The file explorer switches between icon and list views and can browse, create, rename and delete. The text editor saves back to the RAM disk. The terminal accepts about fifteen commands. Four themes are included, and the start menu can restart or shut down the machine.
+### Install to disk
+- Setup option that writes the boot files to the local drive
+- Boots without the ISO afterwards, and saves your files locally
 
-What it is for
-Iceberg is a teaching system, not a working one. It has no processes, no protected memory, no networking, no permanent storage and no system-call interface — the foundations a production operating system is built on. What it does offer is a complete, readable path from the first instruction the firmware executes to a mouse cursor moving on screen, small enough that one person can hold all of it in their head.
+### 🛒 Ice Store
+- A web page that lists apps made only for Iceberg OS
+- Apps use the `.app` extension and download straight into `Home/Downloads`
+- Open it from the **Ice Store** desktop shortcut, or visit: https://dy2097441-coder.github.io/ice-store/
+- Opening a `.app` runs it in its own window
 
-That is the point of it.
+### 🔄 Update system
+- **Updates** icon on the desktop with a check-for-updates log
+- Updates come as `.upt` files, followed by a restart prompt
+- Shows "your PC is up to date" when there's nothing new
+- Update site: https://dy2097441-coder.github.io/ice-updates/
+
+| Update | Version | What it added |
+|---|---|---|
+| #1 | 0.11.1 | Cursor fix |
+| #2 | 0.11.2 | New TCP engine, ARP replies |
+| #3 | 0.11.3 | Crypto, TLS 1.3 client, certificate checking, trust store, direct HTTPS |
+| #4 | 0.11.4 | Faster secure fetch, missing-proxy memory, bare names try HTTPS first, timing line |
+
+---
+
+## Running Iceberg
+
+1. Download the ISO from the Releases page.
+2. Create a new VM in **VirtualBox** and boot from the ISO.
+3. For sound, set the audio controller to **ICH AC97**.
+4. Optional: use the setup option to install Iceberg to the virtual disk so it boots without the ISO.
+
+If a tool on your host needs the helper proxy (for example for update downloads), start the proxy **before** opening VirtualBox, and bind it with `--bind 0.0.0.0` so the VM can reach it. Large `.upt` files need `--max-upt`.
+
+---
+
+## Roadmap
+
+- Extend the `.app` script format with clickable buttons, variables and simple maths
+- A **Calculator** as an Ice Store `.app` download (not built into the OS)
+- More Ice Store apps
+- More updates through the update site
+
+---
+
+## Credits
+
+Startup sound: *Glitch019 / Computer Startup* by Zeraora ([freesound.org/s/572773](https://freesound.org/s/572773)), CC0.
+
+---
+
+## Contributing
+
+Ideas, bug reports and `.app` submissions are welcome. Open an issue and tell us what you'd like to see in Iceberg.
+
+## License
+
+Add your license here (MIT is a common choice for hobby projects).
