@@ -81,6 +81,4 @@ Startup sound: *Glitch019 / Computer Startup* by Zeraora ([freesound.org/s/57277
 
 Ideas, bug reports and `.app` submissions are welcome. Open an issue and tell us what you'd like to see in Iceberg.
 
-## License
 
-Add your license here (MIT is a common choice for hobby projects).
