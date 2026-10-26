@@ -85,6 +85,4 @@ Join the public Discord server: https://discord.gg/M9C3223VEU
 
 Ideas, bug reports and `.app` submissions are welcome. Open an issue or share them on the Discord.
 
-## License
 
-Add your license here (MIT is a common choice for hobby projects).
