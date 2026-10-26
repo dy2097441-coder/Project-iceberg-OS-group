@@ -77,8 +77,14 @@ Startup sound: *Glitch019 / Computer Startup* by Zeraora ([freesound.org/s/57277
 
 ---
 
+## Community
+
+Join the public Discord server: https://discord.gg/M9C3223VEU
+
 ## Contributing
 
-Ideas, bug reports and `.app` submissions are welcome. Open an issue and tell us what you'd like to see in Iceberg.
+Ideas, bug reports and `.app` submissions are welcome. Open an issue or share them on the Discord.
 
+## License
 
+Add your license here (MIT is a common choice for hobby projects).
